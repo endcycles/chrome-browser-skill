@@ -47,13 +47,13 @@ This is the most efficient approach — launches browser if needed, opens all UR
 Start browser if not running:
 `node scripts/launch.js`
 
-### list-tabs.js
+### listTabs.js
 List open tabs with indices:
-`node scripts/list-tabs.js`
+`node scripts/listTabs.js`
 
-### open-tab.js
+### openTab.js
 Open URLs (parallel):
-`node scripts/open-tab.js <url> [url2] ...`
+`node scripts/openTab.js <url> [url2] ...`
 
 ### snapshot.js
 Take accessibility snapshots (parallel):
