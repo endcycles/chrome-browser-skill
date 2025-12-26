@@ -14,7 +14,7 @@ A Claude Code skill that provides browser automation capabilities through a pers
 
 1. Clone this repo into your Claude Code skills directory:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/chrome-browser-skill ~/.claude/skills/chrome-browser
+   git clone https://github.com/endcycles/chrome-browser-skill ~/.claude/skills/chrome-browser
    ```
 
 2. Install dependencies:
