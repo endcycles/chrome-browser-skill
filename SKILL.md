@@ -21,9 +21,9 @@ Starts the browser in the background if it's not already running.
 Shows all open tabs with their indices, titles, and URLs.
 `node scripts/list-tabs.js`
 
-### 3. Open URL
-Opens a new tab with the specified URL.
-`node scripts/open-tab.js <url>`
+### 3. Open URL(s)
+Opens one or more URLs in new tabs (in parallel).
+`node scripts/open-tab.js <url> [url2] [url3] ...`
 
 ### 4. Evaluate JavaScript
 Runs JavaScript in a specific tab.
