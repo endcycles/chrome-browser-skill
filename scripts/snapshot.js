@@ -1,10 +1,10 @@
 import puppeteer from 'puppeteer';
 
 const PORT = 9222;
-const target = process.argv[2];
+const targets = process.argv.slice(2);
 
-if (!target) {
-    console.error("Usage: node snapshot.js <tab_index>");
+if (targets.length === 0) {
+    console.error("Usage: node snapshot.js <tab_index> [tab_index2] ...");
     process.exit(1);
 }
 
@@ -46,38 +46,41 @@ function formatNode(node, depth = 0) {
     return result;
 }
 
+async function getSnapshot(pages, target) {
+    let page;
+    const index = parseInt(target);
+    if (!isNaN(index) && index < pages.length) {
+        page = pages[index];
+    } else {
+        page = pages.find(p => p.url().includes(target));
+    }
+
+    if (!page) {
+        return `[Tab '${target}' not found]`;
+    }
+
+    const snapshot = await page.accessibility.snapshot();
+    if (!snapshot) {
+        return `[No accessibility tree for tab ${target}]`;
+    }
+
+    const title = await page.title();
+    const url = page.url();
+    return `=== Tab ${target}: ${title} ===\n${url}\n\n${formatNode(snapshot)}`;
+}
+
 async function main() {
     try {
         const browserURL = `http://127.0.0.1:${PORT}`;
         const browser = await puppeteer.connect({ browserURL });
-
         const pages = await browser.pages();
-        let page;
 
-        const index = parseInt(target);
-        if (!isNaN(index) && index < pages.length) {
-            page = pages[index];
-        } else {
-            page = pages.find(p => p.url().includes(target));
-        }
+        // Get snapshots in parallel
+        const results = await Promise.all(
+            targets.map(target => getSnapshot(pages, target))
+        );
 
-        if (!page) {
-            console.error(`Tab matching '${target}' not found.`);
-            process.exit(1);
-        }
-
-        // Get accessibility snapshot
-        const snapshot = await page.accessibility.snapshot();
-
-        if (!snapshot) {
-            console.log("No accessibility tree available for this page.");
-            process.exit(0);
-        }
-
-        // Format and output
-        const formatted = formatNode(snapshot);
-        console.log(formatted);
-
+        console.log(results.join('\n\n'));
         await browser.disconnect();
     } catch (e) {
         console.error("Error:", e.message);
