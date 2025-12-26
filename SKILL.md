@@ -5,45 +5,65 @@ description: Control a headless Chrome browser to browse the web, scrape data, a
 
 # Chrome Browser Skill
 
-This skill allows you to control a persistent background Chrome browser instance using CLI scripts.
+Control a persistent Chrome browser instance for web automation.
 
 ## Setup
-Before using the tools, ensure the required dependencies are installed:
-`cd scripts && npm install`
+```bash
+cd scripts && npm install
+```
 
-## Tools
+## Primary Command: browse.js (USE THIS)
 
-### 1. Launch Browser
-Starts the browser in the background if it's not already running.
+**Single command for browsing + reading content.** Opens URLs and takes accessibility snapshots in one call:
+
+```bash
+node scripts/browse.js <url> [url2] [url3] ... [--snapshot] [--close]
+```
+
+**Options:**
+- `--snapshot` — Take accessibility tree snapshots (RECOMMENDED for reading content)
+- `--close` — Close tabs after snapshotting
+
+**Examples:**
+```bash
+# Open 3 news searches and get content in ONE call
+node scripts/browse.js \
+  "https://google.com/search?q=news+USA&tbm=nws" \
+  "https://google.com/search?q=news+China&tbm=nws" \
+  "https://google.com/search?q=news+Russia&tbm=nws" \
+  --snapshot
+
+# Open, snapshot, then close tabs
+node scripts/browse.js "https://example.com" --snapshot --close
+```
+
+This is the most efficient approach — launches browser if needed, opens all URLs in parallel, takes all snapshots in parallel, returns combined output.
+
+---
+
+## Individual Tools (for advanced use)
+
+### launch.js
+Start browser if not running:
 `node scripts/launch.js`
 
-### 2. List Tabs
-Shows all open tabs with their indices, titles, and URLs.
+### list-tabs.js
+List open tabs with indices:
 `node scripts/list-tabs.js`
 
-### 3. Open URL(s)
-Opens one or more URLs in new tabs (in parallel).
-`node scripts/open-tab.js <url> [url2] [url3] ...`
+### open-tab.js
+Open URLs (parallel):
+`node scripts/open-tab.js <url> [url2] ...`
 
-### 4. Take Snapshot (PREFERRED)
-Gets a structured accessibility tree of the page content. **Always use this for reading page content** - much more reliable than custom JavaScript selectors. Supports multiple tabs in parallel.
-`node scripts/snapshot.js <tab_index> [tab_index2] ...`
+### snapshot.js
+Take accessibility snapshots (parallel):
+`node scripts/snapshot.js <tab_index> [index2] ...`
 
-### 5. Evaluate JavaScript
-Runs JavaScript in a specific tab. Use sparingly - prefer `snapshot.js` for reading content.
-`node scripts/evaluate.js <tab_index> <javascript_code>`
-
-*   **tab_index**: The index of the tab (from `list-tabs.js`).
-*   **javascript_code**: The code to run. Returns the result as JSON.
-
-## Workflow Example
-
-1.  **Start:** Always run `node scripts/launch.js` first to ensure the browser is ready.
-2.  **Navigate:** `node scripts/open-tab.js https://example.com`
-3.  **Inspect:** `node scripts/list-tabs.js` -> returns list, say example.com is index 1.
-4.  **Extract:** `node scripts/evaluate.js 1 "document.title"` -> returns "Example Domain".
+### evaluate.js
+Run JavaScript in a tab (use sparingly):
+`node scripts/evaluate.js <tab_index> "<javascript>"`
 
 ## Notes
-*   The browser runs on port 9222.
-*   Data persists between script calls (cookies, session storage) because the browser process stays alive.
-*   To stop the browser, you can manually kill the process ID found in `.chrome-pid`.
+- Browser runs on port 9222
+- Session data persists (cookies, storage)
+- Accessibility snapshots are reliable — avoid custom CSS selectors
