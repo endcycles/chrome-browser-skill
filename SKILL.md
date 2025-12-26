@@ -25,8 +25,12 @@ Shows all open tabs with their indices, titles, and URLs.
 Opens one or more URLs in new tabs (in parallel).
 `node scripts/open-tab.js <url> [url2] [url3] ...`
 
-### 4. Evaluate JavaScript
-Runs JavaScript in a specific tab.
+### 4. Take Snapshot
+Gets a structured accessibility tree of the page content. This is the **preferred** method for reading page content - much more reliable than custom JavaScript selectors.
+`node scripts/snapshot.js <tab_index>`
+
+### 5. Evaluate JavaScript
+Runs JavaScript in a specific tab. Use sparingly - prefer `snapshot.js` for reading content.
 `node scripts/evaluate.js <tab_index> <javascript_code>`
 
 *   **tab_index**: The index of the tab (from `list-tabs.js`).
