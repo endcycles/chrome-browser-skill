@@ -9,7 +9,7 @@ This skill allows you to control a persistent background Chrome browser instance
 
 ## Setup
 Before using the tools, ensure the required dependencies are installed:
-`npm install`
+`cd scripts && npm install`
 
 ## Tools
 

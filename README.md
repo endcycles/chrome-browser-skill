@@ -19,7 +19,7 @@ A Claude Code skill that provides browser automation capabilities through a pers
 
 2. Install dependencies:
    ```bash
-   cd ~/.claude/skills/chrome-browser
+   cd ~/.claude/skills/chrome-browser/scripts
    npm install
    ```
 
